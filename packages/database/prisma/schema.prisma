@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated"
+}
+
+datasource db {
+  provider     = "postgresql"
+  relationMode = "prisma"
+}
+
+model ResearchSession {
+  id             String   @id @default(cuid())
+  userId         String
+  organizationId String?
+  query          String
+  mode           String
+  resultCount    Int
+  metadata       Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  sources ResearchSource[]
+
+  @@index([userId])
+  @@index([organizationId])
+}
+
+model ResearchSource {
+  id             String   @id @default(cuid())
+  userId         String
+  organizationId String?
+  sessionId      String?
+  title          String
+  url            String
+  domain         String
+  snippet        String
+  author         String?
+  publishedDate  String?
+  score          Float?
+  metadata       Json?
+  savedAt        DateTime @default(now())
+
+  session ResearchSession? @relation(fields: [sessionId], references: [id])
+
+  @@unique([userId, url])
+  @@index([userId])
+  @@index([sessionId])
+  @@index([organizationId])
+}
+
+model ResearchWatchlist {
+  id             String   @id @default(cuid())
+  userId         String
+  organizationId String?
+  name           String
+  description    String?
+  query          String
+  mode           String
+  frequency      String   @default("manual")
+  enabled        Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId])
+  @@index([organizationId])
+}
