@@ -281,3 +281,5 @@ packages/database/generated
 .env.local
 *.local
 apps/app/.env.local
+
+.open-next
